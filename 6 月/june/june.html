@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 月次ニュースレター 2026年6月号 | InnoSysTech</title>
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html { background:#E0F2F1; min-height:100%; }
+  body {
+    background:#E0F2F1;
+    font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN','Hiragino Sans',Meiryo,'Yu Gothic',sans-serif;
+    font-size:14px; line-height:1.7; color:#1a1a2e;
+    min-height:100vh; padding:32px 16px;
+  }
+
+  .wrapper {
+    max-width:720px; margin:0 auto;
+    background:#fff; border-radius:12px; overflow:hidden;
+    box-shadow:0 4px 28px rgba(0,0,0,0.12);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background:linear-gradient(135deg,#004D40 0%,#00897B 55%,#4DB6AC 100%);
+    padding:38px 44px 30px; text-align:center;
+  }
+  .header .logo   { font-size:22px; font-weight:800; color:#fff; letter-spacing:3px; }
+  .header .logo-s { font-size:10px; color:rgba(255,255,255,.5); letter-spacing:2px; display:block; margin-top:3px; }
+  .header h1      { font-size:24px; font-weight:700; color:#fff; margin:18px 0 6px; }
+  .header .sub    { font-size:13px; color:rgba(255,255,255,.72); }
+  .badge {
+    display:inline-block; margin-top:14px;
+    background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.28);
+    border-radius:20px; padding:4px 16px; font-size:11px; color:#E0F2F1;
+  }
+
+  /* ── INTRO ── */
+  .intro {
+    background:#E0F2F1;
+    border-top:1px solid #B2DFDB;
+    border-bottom:1px solid #B2DFDB;
+    padding:16px 44px; font-size:12.5px; color:#455a64; line-height:1.85;
+  }
+
+  /* ── SECTION ── */
+  .section { padding:28px 44px; border-bottom:1px solid #D7ECEA; background:#fff; }
+
+  .sec-head { display:flex; align-items:center; margin-bottom:20px; }
+  .sec-icon {
+    width:40px; height:40px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:19px; flex-shrink:0; margin-right:13px; color:#fff;
+  }
+  .ic-a { background:linear-gradient(135deg,#00897B,#4DB6AC); }
+  .ic-b { background:linear-gradient(135deg,#00695C,#00897B); }
+  .sec-title     { font-size:17px; font-weight:700; color:#00695C; }
+  .sec-title sub { display:block; font-size:10px; font-weight:400; color:#aaa; letter-spacing:1px; margin-top:2px; font-style:normal; }
+
+  /* ── NEWS CARDS ── */
+  .ni {
+    display:grid; grid-template-columns:44px 1fr;
+    column-gap:13px;
+    padding:13px 15px 12px;
+    margin-bottom:9px;
+    background:#F1FAF9; border:1px solid #B2DFDB; border-radius:9px;
+  }
+  .ni-ico {
+    width:38px; height:38px; border-radius:8px;
+    background:#E0F2F1; display:flex; align-items:center;
+    justify-content:center; font-size:18px; flex-shrink:0; margin-top:2px;
+  }
+  .ni-title { font-size:13px; font-weight:700; color:#00695C; margin-bottom:4px; }
+  .ni-body  { font-size:12px; color:#455a64; line-height:1.68; }
+  .ni-body strong { color:#00695C; }
+  .hi {
+    display:inline-block; font-weight:800; color:#00897B;
+    background:#E0F2F1; padding:0 5px; border-radius:3px;
+  }
+  .ni-src { margin-top:6px; font-size:10.5px; color:#5D9A94; }
+  .ni-src a { color:#00897B; text-decoration:none; }
+  .ni-src a:hover { text-decoration:underline; }
+
+  /* ── CASE TABLE ── */
+  .tbl-wrap { overflow-x:auto; }
+  table.ct { width:100%; border-collapse:collapse; font-size:12px; }
+  table.ct th {
+    background:#00897B; color:#fff;
+    padding:9px 10px; text-align:left;
+    font-weight:600; font-size:11px; white-space:nowrap;
+  }
+  table.ct td { padding:9px 10px; border-bottom:1px solid #D7ECEA; vertical-align:top; line-height:1.55; }
+  table.ct tr:nth-child(even) td { background:#F1FAF9; }
+  table.ct tr:last-child td { border-bottom:none; }
+  table.ct .co { color:#00897B; font-weight:600; }
+  table.ct .kp { font-weight:700; color:#00897B; }
+  table.ct .sm { font-size:10.5px; color:#5D9A94; }
+
+  /* ── COMPANY SECTION ── */
+  .cmp {
+    background:linear-gradient(135deg,#004D40 0%,#00695C 52%,#00897B 100%);
+    padding:32px 44px 36px;
+    border-top:4px solid #80CBC4;
+  }
+  .cmp-eyebrow {
+    font-size:10px; font-weight:700; letter-spacing:3px;
+    color:#80CBC4; text-transform:uppercase; margin-bottom:10px;
+  }
+  .cmp-title {
+    font-size:22px; font-weight:800; color:#fff;
+    margin-bottom:6px; line-height:1.3;
+  }
+  .cmp-sub { font-size:12px; color:rgba(255,255,255,.55); margin-bottom:24px; letter-spacing:.5px; }
+
+  /* ── Agent diagram ── */
+  .diagram {
+    background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;
+    padding:24px 20px 20px;
+    margin-bottom:22px;
+  }
+  .diag-input {
+    text-align:center; margin-bottom:16px;
+  }
+  .diag-input .box {
+    display:inline-block;
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25);
+    border-radius:8px; padding:8px 20px;
+    font-size:12px; color:#E0F2F1; font-weight:600;
+  }
+  .diag-arrow-down {
+    text-align:center; font-size:18px; color:rgba(255,255,255,.4);
+    line-height:1; margin:6px 0;
+  }
+  .diag-main {
+    text-align:center; margin-bottom:14px;
+  }
+  .diag-main .mbox {
+    display:inline-block;
+    background:linear-gradient(135deg,#00897B,#4DB6AC);
+    border-radius:10px; padding:10px 24px;
+    font-size:13px; font-weight:800; color:#fff;
+    box-shadow:0 4px 16px rgba(0,137,123,.3);
+  }
+  .diag-main .mbox .msub {
+    display:block; font-size:10px; font-weight:400;
+    color:rgba(255,255,255,.8); margin-top:2px;
+  }
+  /* connector lines */
+  .diag-connectors {
+    display:flex; justify-content:center; align-items:flex-start;
+    gap:0; margin-bottom:0; position:relative;
+  }
+  .diag-line-wrap {
+    display:flex; flex-direction:column; align-items:center;
+    flex:1;
+  }
+  .diag-vline {
+    width:2px; height:20px;
+    background:rgba(255,255,255,.25);
+  }
+  .diag-hline-row {
+    display:flex; justify-content:center; width:100%;
+    position:relative;
+  }
+  /* sub agents */
+  .diag-agents {
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    gap:10px; margin-top:0;
+  }
+  .agent-card {
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:8px; padding:10px 8px 8px;
+    text-align:center;
+  }
+  .agent-card .aico { font-size:20px; margin-bottom:4px; }
+  .agent-card .aname {
+    font-size:11px; font-weight:700; color:#80CBC4;
+    margin-bottom:2px;
+  }
+  .agent-card .arole { font-size:10px; color:rgba(255,255,255,.5); }
+
+  .diag-output { text-align:center; margin-top:14px; }
+  .diag-output .obox {
+    display:inline-block;
+    background:linear-gradient(135deg,#00695C,#00897B);
+    border-radius:8px; padding:8px 22px;
+    font-size:12px; font-weight:700; color:#fff;
+    box-shadow:0 3px 12px rgba(46,125,50,.35);
+  }
+
+  /* connector SVG */
+  .diag-svg { display:block; margin:0 auto; overflow:visible; }
+
+  .cc {
+    background:#fff;
+    border:1px solid #B2DFDB;
+    border-radius:10px; padding:18px 22px; margin-bottom:16px;
+    box-shadow:0 8px 22px rgba(0,0,0,.12);
+  }
+  .cc:last-child { margin-bottom:0; }
+  .cc .ct2  { font-size:13px; font-weight:800; color:#00695C; margin-bottom:8px; }
+  .cc .cb   { font-size:12px; color:#1F3D3A; line-height:1.78; }
+  .cc .cb strong { color:#00897B !important; }
+  .point-list {
+    display:grid;
+    gap:8px;
+    margin-top:2px;
+  }
+  .point-item {
+    display:grid;
+    grid-template-columns:24px 1fr;
+    gap:9px;
+    align-items:start;
+  }
+  .point-num {
+    width:24px; height:24px;
+    border-radius:50%;
+    background:#00897B;
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:800;
+    line-height:1;
+  }
+  .point-text { color:#1F3D3A; font-size:12px; line-height:1.72; }
+  .point-text strong { color:#00897B !important; }
+  .tnew {
+    display:inline-block; background:#00897B; color:#fff;
+    font-size:9px; font-weight:700; padding:2px 8px;
+    border-radius:3px; margin-left:7px; vertical-align:middle;
+  }
+  .demo-panel,
+  .robot-panel {
+    margin:16px 0 18px;
+    background:#F1FAF9;
+    border:1px solid #B2DFDB;
+    border-radius:10px;
+    padding:20px;
+  }
+  .demo-stack {
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+  }
+  .flow-node {
+    display:inline-flex; align-items:center; justify-content:center;
+    background:#fff;
+    border:1px solid #80CBC4;
+    border-radius:10px;
+    padding:10px 20px;
+    color:#174B45;
+    font-size:13px; font-weight:800; text-align:center;
+    box-shadow:0 2px 8px rgba(0,137,123,.08);
+  }
+  .flow-node.primary {
+    border:2px solid #00897B;
+    background:#E0F2F1;
+    min-width:260px;
+  }
+  .flow-node.output {
+    background:#fff;
+    border-color:#4DB6AC;
+  }
+  .flow-arrow {
+    color:#00897B;
+    font-size:16px;
+    line-height:1;
+    font-weight:800;
+  }
+  .flow-branches {
+    display:flex; justify-content:center; gap:12px; flex-wrap:wrap;
+    width:100%; margin-top:4px;
+  }
+  .flow-agent {
+    background:#E0F2F1;
+    border:1px solid #80CBC4;
+    border-radius:10px;
+    padding:10px 16px;
+    color:#00695C;
+    font-size:12px; font-weight:700;
+    min-width:118px; text-align:center;
+  }
+  .robot-panel { text-align:center; }
+  .robot-panel video {
+    max-width:100%;
+    width:560px;
+    border-radius:10px;
+    display:block;
+    margin:0 auto;
+    box-shadow:0 5px 18px rgba(0,137,123,.18);
+  }
+
+  /* ── FOOTER ── */
+  .footer { background:#003C35; padding:22px 44px; text-align:center; }
+  .footer .fl  { font-size:15px; font-weight:700; color:#fff; letter-spacing:2px; margin-bottom:5px; }
+  .footer a    { color:#80CBC4; text-decoration:none; font-size:12px; }
+  .footer .fn  { margin-top:11px; font-size:10.5px; color:rgba(255,255,255,.35); line-height:1.75; }
+
+  /* ── PRINT ── */
+  @media print {
+    @page { size:A4; margin:12mm 10mm; }
+    html, body { background:#E0F2F1 !important; padding:0 !important;
+      -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    .wrapper { box-shadow:none !important; border-radius:0 !important; max-width:100% !important; }
+    * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    .ni, .cc, .agent-card, table.ct tr, .sec-head, .diagram { break-inside:avoid !important; page-break-inside:avoid !important; }
+    .ni-ico { break-inside:avoid !important; }
+    .sec-head { break-after:avoid !important; }
+    .rtag + .ni { break-before:avoid !important; }
+    .cmp { break-before:avoid !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <span class="logo">InnoSysTech<span class="logo-s">AI SOLUTIONS PARTNER</span></span>
+    <h1>AI 月次ニュースレター</h1>
+    <div class="sub">世界の最新 AI 動向と InnoSysTech の取り組みをお届けします</div>
+    <div class="badge">📅 2026年6月号 ｜ Vol.03</div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro">
+    平素より大変お世話になっております。<strong>InnoSysTech</strong> です。<br>
+    5月中旬〜6月初旬の AI 動向を厳選5トピックでお届けするとともに、業種別の導入実例と当社の最新取り組みをご紹介します。
+  </div>
+
+  <!-- ═══ MODULE A：ニュース ═══ -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-icon ic-a">🌐</div>
+      <div class="sec-title">AI 最新ニュース 厳選5トピック
+        <sub>GLOBAL AI NEWS — JUNE 2026</sub>
+      </div>
+    </div>
+
+    <!-- 1 Unitree GD01 -->
+    <div class="ni">
+      <div class="ni-ico">🤖</div>
+      <div>
+        <div class="ni-title">Unitree ― 搭乗型変形メカロボット「GD01」発表、世界初の量産型有人ロボット（5/20）</div>
+        <div class="ni-body">中国のロボット大手 <strong>宇樹科技（Unitree Robotics）</strong> が有人操縦型の変形メカロボット <strong>GD01</strong> を発表。価格は390万元（約<span class="hi">9,000万円</span>）から。身長約 <strong>2.8m</strong>、搭乗重量約 <strong>500kg</strong>、二足歩行と四足歩行の切り替えが可能。Unitree の2025年人型ロボット出荷台数は <span class="hi">5,500台超</span>、四足歩行ロボット世界シェア <span class="hi">60～70％</span>。</div>
+        <div class="ni-src">📎 <a href="https://36kr.jp/494444/" target="_blank">36Kr Japan（2026/5/23）</a></div>
+      </div>
+    </div>
+
+    <!-- 2 Hermes Agent -->
+    <div class="ni">
+      <div class="ni-ico">🧠</div>
+      <div>
+        <div class="ni-title">Nous Research ― オープンソース自律エージェント「Hermes Agent」公開</div>
+        <div class="ni-body">Nous Research が開発したオープンソース自律 AI エージェント <strong>Hermes Agent</strong>（MIT ライセンス）が、5月に OpenRouter 日間利用量ランキングで <span class="hi">1位</span> を獲得。「the agent that grows with you」の通り、<strong>「do, learn, improve」ループ</strong> でタスク後にスキルを自動蓄積。<strong>20以上のプラットフォーム</strong>（Telegram・Discord・Slack 等）からアクセス可能、モデル非依存で <strong>$5のVPSでも稼働</strong>。</div>
+        <div class="ni-src">📎 <a href="https://pasqualepillitteri.it/ja/news/3872/hermes-agent-review-community-honne" target="_blank">Pasquale Pillitteri（2026/5）</a> ／ <a href="https://hermes-agent.nousresearch.com" target="_blank">Hermes Agent 公式</a></div>
+      </div>
+    </div>
+
+    <!-- 3 Marvis AI -->
+    <div class="ni">
+      <div class="ni-ico">💬</div>
+      <div>
+        <div class="ni-title">騰訊（Tencent）― OS レベル AI アシスタント「Marvis（馬維斯）」正式リリース（5/20）</div>
+        <div class="ni-body">騰訊が <span class="hi">5月20日</span> に OS レベルの AI アシスタント <strong>Marvis（マーヴィス）</strong> を正式リリース。Windows・Mac・Android 対応で、パソコン全体を <strong>会話可能なスマートアシスタント</strong> として機能させる。初期状態で複数の専門エージェントが設定済みで初期設定不要。<strong>プライベートモード</strong> では全データをローカル完結、クラウド非送信で金融・法務等の高機密シーンにも適合。1日あたり <span class="hi">1,000万トークン無料</span>。</div>
+        <div class="ni-src">📎 <a href="https://news.aibase.com/ja/news/28212" target="_blank">AIBase（2026/5/21）</a> ／ <a href="https://marvis.qq.com" target="_blank">Marvis 公式</a></div>
+      </div>
+    </div>
+
+    <!-- 4 Claude Opus 4.8 -->
+    <div class="ni">
+      <div class="ni-ico">⚡</div>
+      <div>
+        <div class="ni-title">Anthropic ― フラッグシップモデル「Claude Opus 4.8」リリース、SWE-bench Pro <span class="hi">69.2%</span> 達成（5/28）</div>
+        <div class="ni-body">Anthropic が <span class="hi">5月28日</span> に最高性能モデル <strong>Claude Opus 4.8</strong> をリリース。従来比 <span class="hi">4倍</span> の正確性向上（honesty）を実現し、<strong>SWE-bench Pro 69.2%</strong>、GDPval Elo <span class="hi">1,890</span> を記録。新機能 <strong>Dynamic Workflow</strong> で自律的にタスクフローを構築・実行。価格は Opus 4.7 と同等（$5/$25 per million tokens）を維持しつつ、長時間エージェント作業での安定性が大幅向上。</div>
+        <div class="ni-src">📎 <a href="https://techcrunch.com/2026/05/28/anthropic-releases-opus-4-8-with-new-dynamic-workflow-tool/" target="_blank">TechCrunch（2026/5/28）</a> ／ <a href="https://www.anthropic.com/news/claude-opus-4-8" target="_blank">Anthropic 公式（2026/5/28）</a></div>
+      </div>
+    </div>
+
+    <!-- 5 华为韬(τ)定律 -->
+    <div class="ni">
+      <div class="ni-ico">🔬</div>
+      <div>
+        <div class="ni-title">華為（Huawei）― IEEE ISCAS で「韜(τ)定律」を発表、ムーアの法則に代わる新原理（5/25）</div>
+        <div class="ni-body">Huawei の何庭波が IEEE ISCAS 2026（上海）で基調講演し、半導体産業の新指導原則 <strong>韜(τ)定律</strong> を発表。「<span class="hi">幾何縮小</span>」に代わり「<span class="hi">時間(τ)縮小</span>」で性能向上を目指す。中核技術 <strong>LogicFolding（論理折り畳み）</strong> により、デバイス・回路・チップ・システムの多層最適化を実現。過去6年間で <strong>381種類のチップ</strong> を設計・量産。2026年秋の次期 <strong>麒麟チップ</strong> に論理折り畳み技術を初採用、2031年には <span class="hi">1.4nm プロセス相当</span> のトランジスタ密度に到達する見通し。</div>
+        <div class="ni-src">📎 <a href="https://www.huawei.com/cn/news/2026/5/ieee-iscas-tau-scaling" target="_blank">Huawei 公式（2026/5/25）</a></div>
+      </div>
+    </div>
+
+  </div><!-- /section A -->
+
+  <!-- ═══ MODULE B：落地案例 ═══ -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-icon ic-b">💼</div>
+      <div class="sec-title">業種別 AI 活用 実例
+        <sub>AI BUSINESS USE CASES — MAY 2026</sub>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="ct">
+        <thead>
+          <tr><th>企業名</th><th>国</th><th>業種</th><th>AI 活用内容・効果</th><th>出典</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="co">三菱電機 × Lumos Robotics</td><td>🇯🇵🇨🇳</td><td class="sm">産業用ロボット</td>
+            <td>三菱電機が中国産業用ヒューマノイド <span class="kp">Lumos Robotics</span> に連続出資、累計約<span class="kp">230億円</span>。物理AIエンジン「Lumos Nexcore」搭載、三菱電機中国工場で試験運用中。</td>
+            <td class="sm"><a href="https://36kr.jp/494360/" target="_blank">36Kr Japan（5/21）</a></td>
+          </tr>
+          <tr>
+            <td class="co">首形科技（AheadForm）</td><td>🇨🇳</td><td class="sm">感情ヒューマノイド</td>
+            <td>「不気味の谷」の克服を目指す感情表現ヒューマノイド。シリーズA1で<span class="kp">数十億円</span>調達。創業者開発の「顔面共感表現予測モデル」とブラシレスマイクロモーターで人間そっくりの表情を実現。<span class="kp">4シリーズ</span>（Origin/Elf/Mecha/Mimetic）を展開。</td>
+            <td class="sm"><a href="https://36kr.jp/494602/" target="_blank">36Kr Japan（5/26）</a></td>
+          </tr>
+          <tr>
+            <td class="co">Figure AI × Catalyst Brands</td><td>🇺🇸</td><td class="sm">物流・小売</td>
+            <td>Figure AI が小売大手 Catalyst Brands と<span class="kp">商業提携</span>を締結。ネバダ州リノの流通物流センターに次世代人型ロボットを先行展開。JCPenney・Brooks Brothers・Aéropostale 等のブランド向け倉庫作業を自動化。</td>
+            <td class="sm"><a href="https://roboticsandautomationnews.com/2026/05/27/figure-signs-commercial-agreement-with-catalyst-brands-to-deploy-humanoid-robots-in-logistics-operations/101950/" target="_blank">Robotics &amp; Automation News（5/27）</a></td>
+          </tr>
+          <tr>
+            <td class="co">DeepSeek（深度求索）</td><td>🇨🇳</td><td class="sm">AI 研究</td>
+            <td>DeepSeek シニアリサーチャー<strong>陳德里（Deli Chen）</strong>が AI Agent との共著論文を発表。全 <span class="kp">46ページ</span> のうち <span class="kp">99%</span> を CodeAgent が執筆、所要 <span class="kp">6日間</span>（人間の思考時間は実質 <span class="kp">2時間未満</span>）。95本以上の論文を網羅するサーベイ論文で、自律型リサーチエージェントの自律度を分類する新枠組みを提案。</td>
+            <td class="sm"><a href="https://eu.36kr.com/en/p/3826918146691721" target="_blank">36Kr（5/27）</a></td>
+          </tr>
+          <tr>
+            <td class="co">科大訊飛（iFlytek）</td><td>🇨🇳</td><td class="sm">AI ウェアラブル</td>
+            <td><span class="kp">5月28日</span>、マカオの BEYOND Expo 2026 で <strong>iFlytek AI グラス</strong> を正式発表。本体 <span class="kp">約40g</span> の超軽量ボディに <span class="kp">122言語</span> 対応のリアルタイム翻訳を統合。対面翻訳で「見た人を聞き分ける」を実現。</td>
+            <td class="sm"><a href="https://eu.36kr.com/en/p/3830205689357954" target="_blank">36Kr（5/28）</a></td>
+          </tr>
+          <tr>
+            <td class="co">Y Combinator（YC）</td><td>🇺🇸</td><td class="sm">AI ネイティブ組織</td>
+            <td>YC ゼネラルパートナー Pete Kumman 氏が社内 AI エージェント基盤の詳細を初公開。毎夜エージェントが会話ログを分析し <strong>スキルの自律改善</strong> を実行、全社員で共有する「<span class="kp">組織の共有脳</span>」を構築。年間 <span class="kp">1万〜10万ドル</span> のトークンコストで「2年先の組織」を実現すると表明。</td>
+            <td class="sm"><a href="https://note.com/startup_now0708/n/nb2114c8c0d94" target="_blank">note（5/28）</a></td>
+          </tr>
+          <tr>
+            <td class="co">Unitree Robotics</td><td>🇨🇳</td><td class="sm">ロボット体験施設</td>
+            <td><span class="kp">5月31日</span>、アジア初のロボット体験ストアを開業。人型ロボットの実演・体験を一般向けに提供。GD01 搭乗型メカロボット発表に続き、ロボット技術の<span style="color:#00897B;">一般普及</span>を加速させる施策。</td>
+            <td class="sm"><a href="https://www.globaltimes.cn/page/202605/1362387.shtml" target="_blank">Global Times（5/31）</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ MODULE C：InnoSysTech ═══ -->
+  <div class="cmp">
+
+    <div class="cmp-eyebrow">✦ InnoSysTech の最新取り組み</div>
+    <div class="cmp-title">AI 最新進捗</div>
+    <div class="cmp-sub">OUR LATEST AI INITIATIVES — FURTHER DEVELOPMENT</div>
+
+    <div class="cc">
+      <div class="ct2">UBTECH「悟空」デスクトップロボット <span class="tnew">2次開発完了</span></div>
+
+      <div class="robot-panel">
+        <video controls preload="metadata">
+          <source src="VID5_Toca Toca.mp4" type="video/mp4">
+          お使いのブラウザは動画再生に対応していません。
+        </video>
+      </div>
+
+      <div class="cb point-list" style="margin-top:16px;">
+        <div class="point-item">
+          <span class="point-num">1</span>
+          <div class="point-text"><strong>2次開発完了：</strong> 5月号でご紹介した日本語化対応に続き、<strong>2次開発</strong> を完了しました。日本語での <strong>音声対話</strong> や <strong>ダンス</strong> など、多彩なインタラクションが可能です。</div>
+        </div>
+        <div class="point-item">
+          <span class="point-num">2</span>
+          <div class="point-text"><strong>活用シーン：</strong> 日本の <strong>教育・見守り</strong> 等のシナリオに対応。日本語での自然な対話やダンスパフォーマンスを通じて、子どもから高齢者まで幅広い層に <strong>対話型 AI 体験</strong> を提供します。</div>
+        </div>
+        <div class="point-item">
+          <span class="point-num">3</span>
+          <div class="point-text"><strong>編隊ダンス：</strong> 複数台の悟空ロボットによる <strong>編隊ダンス</strong> が可能。上の動画では「Toca Toca」の音楽に合わせた編隊ダンスを実演しています。</div>
+        </div>
+      </div>
+      <div class="cb" style="margin-top:14px; padding-top:12px; border-top:1px solid #B2DFDB;">
+        悟空ロボットの2次開発は、<strong>「AI の身体性と自律性の融合」</strong>という今月のトレンドにも合致する取り組みです。日本語・中国語対応、オンプレミス展開にも対応可能です。ご関心のある方はお気軽にご相談ください。
+      </div>
+    </div>
+
+  </div><!-- /cmp -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="fl">InnoSysTech</div>
+    <div><a href="https://innosystech.jp/" target="_blank">https://innosystech.jp/</a></div>
+    <div class="fn">
+      本ニュースレターは信頼性の高い各社公式発表・専門メディア報道等をもとに作成しています。<br>
+      掲載情報は投資判断等の根拠としてのご利用はご遠慮ください。<br>
+      © 2026 InnoSysTech. All rights reserved.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

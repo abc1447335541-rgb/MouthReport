@@ -24,16 +24,16 @@
   :root {
     --ink:#1f2933;
     --muted:#6b7280;
-    --paper:#fbfaf7;
-    --line:#e4ded2;
-    --gold:#c9a84c;
+    --paper:#f6fbfa;
+    --line:#cfe7e4;
+    --gold:#00897B;
   }
   body {
     margin:0;
     min-height:100vh;
     background:
-      radial-gradient(circle at top left, rgba(201,168,76,.13), transparent 32%),
-      linear-gradient(180deg,#f7f4ec 0%,#fbfaf7 44%,#f2efe8 100%);
+      radial-gradient(circle at top left, rgba(0,137,123,.16), transparent 34%),
+      linear-gradient(180deg,#E0F2F1 0%,#f6fbfa 46%,#eef8f7 100%);
     color:var(--ink);
     font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN','Hiragino Sans',Meiryo,'Yu Gothic',sans-serif;
     line-height:1.7;
@@ -44,12 +44,12 @@
     padding:48px 20px 56px;
   }
   .hero {
-    background:linear-gradient(135deg,#111827 0%,#243447 56%,#3b4858 100%);
+    background:linear-gradient(135deg,#004D40 0%,#00695C 54%,#00897B 100%);
     border-radius:18px;
     padding:42px 38px;
     color:#fff;
-    border:1px solid rgba(201,168,76,.32);
-    box-shadow:0 14px 38px rgba(31,41,51,.18);
+    border:1px solid rgba(224,242,241,.42);
+    box-shadow:0 14px 38px rgba(0,77,64,.18);
   }
   .logo {
     font-size:24px;
@@ -151,6 +151,11 @@
     --theme-soft:#eefaf3;
     background:linear-gradient(180deg,var(--theme-soft),#fff 42%);
   }
+  .theme-2026-06 {
+    --theme:#00897B;
+    --theme-soft:#E0F2F1;
+    background:linear-gradient(180deg,var(--theme-soft),#fff 42%);
+  }
   .theme-2026-04 {
     --theme:#1B4FBF;
     --theme-soft:#E8F4FD;
@@ -186,6 +191,13 @@
     </div>
 
     <section class="issues" aria-label="AI 月次ニュースレター バックナンバー">
+      <a class="issue theme-2026-06" href="6%20月/june/june.html">
+        <div class="month">2026年6月号</div>
+        <div class="meta">Vol.03 ／ Rainy Teal</div>
+        <p class="desc">AI 最新ニュース、業務活用事例、InnoSysTech の AI エージェント活用提案を掲載。</p>
+        <span class="open">月刊を見る →</span>
+      </a>
+
       <a class="issue theme-2026-05" href="innosystech_AI_newsletter_2026年05月.html">
         <div class="month">2026年5月号</div>
         <div class="meta">Vol.02 ／ Fresh Green</div>
