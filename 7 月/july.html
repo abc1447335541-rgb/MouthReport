@@ -293,6 +293,25 @@
     margin:0 auto;
     box-shadow:0 5px 18px rgba(2,136,209,.18);
   }
+  /* 世界モデル推論ダッシュボード（iframe 埋め込み） */
+  .robot-panel .cosmos-frame {
+    width:100%;
+    height:480px;
+    border:1px solid #81D4FA;
+    border-radius:10px;
+    display:block;
+    margin:0 auto;
+    background:#04060c;
+    box-shadow:0 5px 18px rgba(2,136,209,.22);
+  }
+  .cosmos-cap {
+    margin-top:10px;
+    font-size:10.5px;
+    line-height:1.6;
+    color:#5B9AC4;
+    letter-spacing:.02em;
+  }
+  .cosmos-cap b { color:#0277BD; }
 
   /* ── FOOTER ── */
   .footer { background:#013E62; padding:22px 44px; text-align:center; }
@@ -398,7 +417,7 @@
     <div class="sec-head">
       <div class="sec-icon ic-b">💼</div>
       <div class="sec-title">業種別 AI 活用 実例
-        <sub>AI BUSINESS USE CASES — JUNE 2026</sub>
+        <sub>AI BUSINESS USE CASES — JULY 2026</sub>
       </div>
     </div>
     <div class="tbl-wrap">
@@ -447,34 +466,35 @@
 
     <div class="cmp-eyebrow">✦ InnoSysTech の最新取り組み</div>
     <div class="cmp-title">AI 最新進捗</div>
-    <div class="cmp-sub">OUR LATEST AI INITIATIVES — UNITREE</div>
+    <div class="cmp-sub">OUR LATEST AI INITIATIVES — WORLD MODEL</div>
 
     <div class="cc">
-      <div class="ct2">Unitree（宇樹）ヒューマノイド・ロボット犬 <span class="tnew">専用知識ベース</span></div>
+      <div class="ct2">Unitree（宇樹）ロボット ＋ 世界モデル <span class="tnew">世界モデル</span></div>
 
       <div class="robot-panel">
-        <video controls preload="metadata">
-          <source src="video_July.mp4" type="video/mp4">
-          お使いのブラウザは動画再生に対応していません。
-        </video>
+        <iframe class="cosmos-frame"
+                src="cosmos/cosmos.html"
+                title="IST COSMOS 世界モデル意思決定推論デモ"
+                loading="lazy"
+                allow="autoplay; fullscreen"></iframe>
       </div>
 
       <div class="cb point-list" style="margin-top:16px;">
         <div class="point-item">
           <span class="point-num">1</span>
-          <div class="point-text"><strong>開発進捗：</strong> Unitree の <strong>ヒューマノイド</strong> と <strong>ロボット犬（四足歩行）</strong> 双方の新機能開発を完了。上の動画では当社のロボットをご紹介します。</div>
+          <div class="point-text"><strong>プロジェクト概要：</strong> 「宇樹ロボット ＋ 世界モデル」アーキテクチャの有効性を <strong>動的障害物回避シーン</strong> で検証。実機デプロイにより、世界モデルの予測に基づいた <strong>左／右方向への自律回避</strong> が可能になりました。下のデモ（IST COSMOS）は、世界モデルが複数の動作を推演し <strong>成功率の最も高い動作</strong> を選択するまでの全過程を可視化したものです。</div>
         </div>
         <div class="point-item">
           <span class="point-num">2</span>
-          <div class="point-text"><strong>コア能力：</strong> 顧客ごとの <strong>専用知識ベース</strong> をカスタム構築でき、インテリジェントな Q&amp;A・解説が可能。<strong>中国語・日本語のバイリンガル対話</strong> に対応し、多言語インタラクションのニーズを満たします。</div>
+          <div class="point-text"><strong>コア技術ハイライト：</strong> 世界モデルはロボットの「<strong>物理的頭脳</strong>」として機能し、現在の状態から未来の物理環境との相互作用を高忠実度で予測します。回避時には動作決策モジュールと <strong>シームレスに連携</strong> し、障害物に対して複数の動作（左へ迂回・右へ回避など）の未来の映像ストリームを推演し、<strong>成功率の最も高い動作指令</strong> を選択して宇樹ロボットに送信。この構成は未知環境での <strong>汎化能力</strong> を高めるとともに、後続のアルゴリズム反復に <strong>質の高い合成データ</strong> を提供します。</div>
         </div>
         <div class="point-item">
           <span class="point-num">3</span>
-          <div class="point-text"><strong>応用シーン：</strong> 現時点では <strong>展示ホールの案内・ガイド</strong> を優先導入。将来的には <strong>商業施設での売場案内</strong> や <strong>博物館の解説</strong> など、多様な商業シーンへの展開を計画しています。</div>
+          <div class="point-text"><strong>次の計画：</strong> 今回の回避テストの成功経験をベースに、<strong>長期的かつ複雑なタスク</strong> の計画能力をさらに拡張し、極端・動的シーンでのモデルの <strong>応答速度</strong> を継続的に最適化します。</div>
         </div>
       </div>
       <div class="cb" style="margin-top:14px; padding-top:12px; border-top:1px solid #B3E5FC;">
-        Unitree ロボットへの <strong>知識ベース搭載</strong> と <strong>日中バイリンガル対応</strong> は、今月トレンドの「身体性 AI ＋ 自律性」を自社事例として体現する取り組みです。展示・接客シーンでの活用をご検討中の方は、ぜひお気軽にご相談ください。
+        宇樹ロボットへの <strong>世界モデル導入</strong> と <strong>動的障害物回避</strong> の実機検証は、今月トレンドの「身体性 AI ＋ 自律性」を自社事例として体現する取り組みです。ロボットの自律移動・回避制御の導入をご検討中の方は、ぜひお気軽にご相談ください。
       </div>
     </div>
 

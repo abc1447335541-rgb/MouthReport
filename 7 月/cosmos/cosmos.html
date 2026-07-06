@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IST COSMOS · 世界模型决策推演</title>
+<style>
+  :root{
+    --bg:#04060c;
+    --bg2:#080d18;
+    --panel:#0a121f;
+    --panel2:#0c1626;
+    --line:rgba(45,226,255,.16);
+    --line-soft:rgba(45,226,255,.08);
+    --cyan:#2de2ff;
+    --cyan-d:#1aa8c4;
+    --amber:#ffb347;
+    --amber-d:#ff8a1f;
+    --hot:#ff4d6d;
+    --grn:#3ce88a;
+    --text:#e9f3ff;
+    --muted:#7c95ae;
+    --faint:#3a4f66;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans)}
+  body{
+    background:
+      radial-gradient(1200px 700px at 22% 8%, rgba(45,226,255,.07), transparent 60%),
+      radial-gradient(1000px 800px at 92% 100%, rgba(255,138,31,.06), transparent 55%),
+      linear-gradient(160deg,#04060c 0%,#070c16 55%,#04060c 100%);
+  }
+
+  .app{
+    height:100vh;width:100vw;
+    display:grid;
+    grid-template-rows:7.2vh 1fr 4.4vh;
+    padding:1.1vh 1.1vw;
+    gap:1vh;
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    display:flex;align-items:center;gap:1.4vw;
+    border:1px solid var(--line);
+    background:linear-gradient(90deg,rgba(10,18,31,.9),rgba(8,13,24,.55));
+    border-radius:6px;padding:0 1.4vw;position:relative;overflow:hidden;
+  }
+  header::before{content:"";position:absolute;inset:0;background:
+    repeating-linear-gradient(90deg,transparent 0 60px,rgba(45,226,255,.025) 60px 61px);pointer-events:none}
+  .brand{display:flex;align-items:center;gap:.8vw}
+  .logo{
+    width:2.7vh;height:2.7vh;flex:none;border-radius:5px;
+    background:conic-gradient(from 210deg,var(--cyan),var(--amber),var(--hot),var(--cyan));
+    box-shadow:0 0 18px rgba(45,226,255,.5);position:relative;
+  }
+  .logo::after{content:"";position:absolute;inset:24%;border-radius:3px;background:var(--bg);}
+  .title{font-weight:800;letter-spacing:.06em;font-size:2.05vh;line-height:1}
+  .title b{color:var(--cyan)}
+  .subtitle{font-family:var(--mono);font-size:1.2vh;color:var(--muted);letter-spacing:.2em;margin-top:.5vh}
+  .hbar{flex:1}
+  .pill{
+    font-family:var(--mono);font-size:1.3vh;letter-spacing:.1em;
+    border:1px solid var(--line);border-radius:40px;padding:.6vh 1.05vw;color:var(--muted);
+    display:flex;align-items:center;gap:.55vw;background:rgba(45,226,255,.04);
+  }
+  .pill b{color:var(--text)}
+  .dot{width:.85vh;height:.85vh;border-radius:50%;background:var(--grn);box-shadow:0 0 10px var(--grn);animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .clock{font-family:var(--mono);font-size:1.7vh;letter-spacing:.08em;color:var(--cyan);min-width:8.5vw;text-align:right}
+
+  /* ---------- MAIN ---------- */
+  main{display:grid;grid-template-columns:1.42fr 1fr;gap:1vw;min-height:0}
+
+  .panel{
+    border:1px solid var(--line);border-radius:8px;background:linear-gradient(180deg,var(--panel),var(--panel2));
+    position:relative;min-height:0;overflow:hidden;
+  }
+  .panel .corner{position:absolute;width:1.6vh;height:1.6vh;border:1.5px solid var(--cyan);opacity:.6;z-index:5}
+  .panel .corner.tl{top:8px;left:8px;border-right:none;border-bottom:none}
+  .panel .corner.tr{top:8px;right:8px;border-left:none;border-bottom:none}
+  .panel .corner.bl{bottom:8px;left:8px;border-right:none;border-top:none}
+  .panel .corner.br{bottom:8px;right:8px;border-left:none;border-top:none}
+
+  .ptag{position:absolute;top:1vh;left:1.4vw;z-index:6;display:flex;align-items:center;gap:.6vw}
+  .ptag .k{font-family:var(--mono);font-size:1.2vh;font-weight:700;letter-spacing:.26em;color:var(--cyan)}
+  .ptag .v{font-weight:700;font-size:1.75vh;letter-spacing:.04em}
+
+  /* LEFT - feed */
+  .feed{display:block}
+  #povVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#04060d;z-index:1;opacity:0;transition:opacity .35s}
+  #povVideo.on{opacity:1}
+  #pov{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+  .novid{position:absolute;inset:0;z-index:2;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1vh;
+    font-family:var(--mono);font-size:1.35vh;letter-spacing:.16em;color:var(--muted);text-align:center;pointer-events:none}
+  .novid.show{display:flex}
+  .novid b{color:var(--amber);font-size:1.05vh;letter-spacing:.2em}
+  .novid small{color:var(--faint);font-size:.95vh;letter-spacing:.1em}
+
+  /* left feed manual controls */
+  .feedctrl{position:absolute;left:50%;bottom:3.6vh;transform:translateX(-50%);z-index:9;display:flex;gap:.7vw}
+  .fcbtn{font-family:var(--mono);font-size:1.15vh;letter-spacing:.1em;color:var(--cyan);
+    background:rgba(4,6,12,.72);border:1px solid var(--line);border-radius:30px;padding:.6vh 1.1vw;cursor:pointer;
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);transition:all .2s}
+  .fcbtn:hover{background:rgba(45,226,255,.14);border-color:var(--cyan);color:#fff}
+  .fcbtn.hot{color:var(--amber);border-color:rgba(255,179,71,.5)}
+  .fcbtn.hot:hover{background:rgba(255,179,71,.16);border-color:var(--amber);color:#fff}
+  .feedfx{position:absolute;inset:0;pointer-events:none;z-index:4;
+    background:
+      radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);}
+  .feedfx::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 2px,transparent 2px 4px);opacity:.5}
+  .rec{position:absolute;top:1vh;right:1.4vw;z-index:7;font-family:var(--mono);font-size:1.15vh;
+    letter-spacing:.18em;color:var(--hot);display:flex;align-items:center;gap:.5vw}
+  .rec i{width:1vh;height:1vh;border-radius:50%;background:var(--hot);box-shadow:0 0 10px var(--hot);animation:blink 1s infinite}
+  .meta{position:absolute;left:1.4vw;bottom:1vh;z-index:7;font-family:var(--mono);font-size:1.32vh;
+    color:var(--muted);letter-spacing:.08em;display:flex;gap:1.5vw}
+  .meta b{color:var(--cyan);font-size:1.42vh}
+
+  .phasebar{position:absolute;top:1vh;left:50%;transform:translateX(-50%);z-index:8;
+    display:flex;align-items:center;gap:.8vw;font-family:var(--mono);font-size:1.5vh;font-weight:700;letter-spacing:.18em;
+    border:1.5px solid var(--line);border-radius:30px;padding:.7vh 1.5vw;background:rgba(4,6,12,.78);
+    color:var(--cyan);box-shadow:0 0 18px rgba(45,226,255,.25);transition:color .4s,border-color .4s,box-shadow .4s;backdrop-filter:blur(2px)}
+  .phasebar.predict{box-shadow:0 0 22px rgba(255,179,71,.4)}
+  .phasebar.done{box-shadow:0 0 22px rgba(60,232,138,.4)}
+  .phasebar i{width:1.1vh;height:1.1vh;border-radius:50%;background:currentColor;box-shadow:0 0 14px currentColor;animation:blink 1.1s infinite}
+  .phasebar.predict{color:var(--amber);border-color:rgba(255,179,71,.4)}
+  .phasebar.done{color:var(--grn);border-color:rgba(60,232,138,.35)}
+  .phaseprog{height:.4vh;width:7vw;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;display:none}
+  .phasebar.predict .phaseprog{display:block}
+  .phaseprog b{display:block;height:100%;width:0;background:var(--amber);box-shadow:0 0 8px var(--amber);transition:width .15s linear}
+
+  /* RIGHT */
+  .right{display:grid;grid-template-rows:1.22fr 1fr;gap:1vw;min-height:0}
+
+  /* predictions */
+  .preds{padding:4vh 1.2vw 1.1vh}
+  .pred-list{display:flex;flex-direction:column;gap:.85vh;height:100%;justify-content:center}
+  .pred{
+    --p:30;
+    display:grid;grid-template-columns:3vh 1fr auto;align-items:center;gap:.9vw;
+    border:1px solid var(--line-soft);border-radius:6px;padding:.95vh 1vw;
+    background:rgba(255,255,255,.012);position:relative;overflow:hidden;cursor:pointer;
+    opacity:0;transform:translateX(18px);
+    transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1),border-color .4s,background .4s,box-shadow .4s;
+  }
+  .pred.show:hover{border-color:var(--cyan);background:rgba(45,226,255,.05)}
+  .pred.previewing{border-color:var(--cyan)!important;box-shadow:0 0 0 1px rgba(45,226,255,.5) inset!important}
+  .pred.previewing .idx,.pred.previewing .prob{color:var(--cyan)!important}
+  .predhint{position:absolute;top:1vh;right:1.4vw;z-index:6;font-family:var(--mono);font-size:1.15vh;
+    letter-spacing:.1em;color:var(--cyan-d);opacity:.9}
+  .pred.show{opacity:1;transform:none}
+  .pred .fill{position:absolute;inset:0;width:calc(var(--p)*1%);
+    background:linear-gradient(90deg,rgba(45,226,255,.16),rgba(45,226,255,.02));transition:width .9s cubic-bezier(.4,0,.2,1);z-index:0}
+  .pred>*{position:relative;z-index:1}
+  .pred .idx{font-family:var(--mono);font-size:1.6vh;color:var(--faint);font-weight:700;text-align:center}
+  .pred .lab{font-size:1.55vh;font-weight:600;letter-spacing:.02em}
+  .pred .lab small{display:block;font-family:var(--mono);font-size:.95vh;font-weight:400;color:var(--muted);letter-spacing:.12em;margin-top:.2vh}
+  .pred .prob{font-family:var(--mono);font-size:2vh;font-weight:700;color:var(--cyan);min-width:5.5vw;text-align:right;letter-spacing:.02em}
+  .pred.lead{border-color:var(--amber);background:rgba(255,179,71,.12);
+    box-shadow:0 0 0 2px var(--amber) inset,0 0 24px rgba(255,179,71,.4);
+    transform:scale(1.035);z-index:4;animation:leadPulse 1.25s ease-in-out infinite}
+  @keyframes leadPulse{
+    0%,100%{box-shadow:0 0 0 2px var(--amber) inset,0 0 16px rgba(255,179,71,.30)}
+    50%{box-shadow:0 0 0 2px var(--amber) inset,0 0 34px rgba(255,179,71,.62)}}
+  .pred.lead .fill{background:linear-gradient(90deg,rgba(255,179,71,.36),rgba(255,138,31,.05))}
+  .pred.lead .idx{color:var(--amber);font-size:2.1vh}
+  .pred.lead .lab{font-size:1.72vh}
+  .pred.lead .prob{color:var(--amber);font-size:2.45vh}
+  .pred.lead::after{content:attr(data-tag);position:absolute;top:50%;right:6.6vw;transform:translateY(-50%);
+    font-family:var(--mono);font-size:1.05vh;font-weight:700;letter-spacing:.12em;color:#1a1206;
+    background:var(--amber);border-radius:20px;padding:.4vh .8vw;z-index:3;white-space:nowrap;
+    box-shadow:0 0 14px rgba(255,179,71,.75)}
+  .pred.lead.decided{border-color:var(--grn);background:rgba(60,232,138,.14);
+    box-shadow:0 0 0 2px var(--grn) inset,0 0 26px rgba(60,232,138,.5);
+    animation:decidedPulse 1.4s ease-in-out infinite}
+  @keyframes decidedPulse{
+    0%,100%{box-shadow:0 0 0 2px var(--grn) inset,0 0 18px rgba(60,232,138,.38)}
+    50%{box-shadow:0 0 0 2px var(--grn) inset,0 0 38px rgba(60,232,138,.68)}}
+  .pred.lead.decided .fill{background:linear-gradient(90deg,rgba(60,232,138,.34),rgba(60,232,138,.04))}
+  .pred.lead.decided::after{color:#04140b;background:var(--grn);box-shadow:0 0 16px rgba(60,232,138,.85)}
+  .pred.lead.decided .idx,.pred.lead.decided .prob{color:var(--grn)}
+
+  /* heatmap */
+  .heat{padding:5.3vh 1.2vw 1.4vh;display:flex;flex-direction:column}
+  .heatcap{position:absolute;top:3.15vh;left:1.4vw;z-index:6;font-family:var(--mono);font-size:1.1vh;letter-spacing:.05em;color:var(--muted)}
+  .heatcap b{color:var(--hot);font-weight:700}
+  .heatcap i{color:var(--cyan);font-style:normal;font-weight:700}
+  .heat-wrap{flex:1;display:grid;grid-template-columns:1fr 5.6vh;gap:.9vw;min-height:0}
+  #heat{display:block;width:100%;height:100%;border-radius:4px}
+  .heatbox{position:relative;border:1px solid var(--line-soft);border-radius:4px;overflow:hidden}
+  .heatgrid{position:absolute;inset:0;pointer-events:none;
+    background:
+      repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 calc(100%/8 - 1px),rgba(45,226,255,.05) calc(100%/8 - 1px) calc(100%/8)),
+      repeating-linear-gradient(90deg,rgba(0,0,0,.18) 0 calc(100%/14 - 1px),rgba(45,226,255,.05) calc(100%/14 - 1px) calc(100%/14))}
+  .scale{display:flex;flex-direction:column;align-items:center;gap:.8vh;font-family:var(--mono);font-size:1.2vh;font-weight:700;color:var(--text)}
+  .scale span{line-height:1.1;letter-spacing:.04em;text-align:center}
+  #scHi{color:var(--hot)}
+  #scLo{color:var(--cyan)}
+  .bar{flex:1;width:2.1vh;border-radius:4px;background:linear-gradient(180deg,var(--hot),var(--amber),var(--cyan),#0a3b52);border:1px solid var(--line);box-shadow:0 0 12px rgba(255,77,109,.28)}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border:1px solid var(--line);border-radius:6px;background:rgba(8,13,24,.6);
+    display:flex;align-items:center;overflow:hidden;position:relative;
+  }
+  .ftags{display:flex;gap:1.2vw;padding-left:1.2vw;flex:none;align-items:center}
+  .ftag{font-family:var(--mono);font-size:1.38vh;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:.55vw}
+  .ftag b{color:var(--cyan);font-size:1.5vh;font-weight:700}
+  .ftag.am b{color:var(--amber)}
+  .divider{width:1px;height:2.2vh;background:var(--line)}
+  .ticker{flex:1;overflow:hidden;margin:0 1.2vw;white-space:nowrap;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+  .ticker span{display:inline-block;font-family:var(--mono);font-size:1.28vh;letter-spacing:.06em;color:var(--muted);
+    padding-left:100%;animation:scrollx 26s linear infinite}
+  .ticker b{color:var(--cyan-d)}
+  @keyframes scrollx{to{transform:translateX(-100%)}}
+
+  /* language switch */
+  .langsw{display:flex;gap:.3vw;border:1px solid var(--line);border-radius:30px;padding:.35vh .4vw;background:rgba(45,226,255,.04);margin-left:.6vw}
+  .langsw button{font-family:var(--mono);font-size:1.1vh;letter-spacing:.08em;color:var(--muted);
+    background:none;border:none;cursor:pointer;padding:.35vh .75vw;border-radius:20px;transition:all .25s}
+  .langsw button.on{color:var(--bg);background:var(--cyan);font-weight:700;box-shadow:0 0 10px rgba(45,226,255,.4)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001s!important}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title" id="brandTitle"></div>
+        <div class="subtitle">WORLD-MODEL DECISION INFERENCE · UNITREE G1</div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+    <div class="pill"><span class="dot"></span><span id="pillActive"></span> <b>ACTIVE</b></div>
+    <div class="pill"><span id="pillModel"></span> <b>Cosmos3-nano</b></div>
+    <div class="pill"><span id="pillDevice"></span> <b>A800</b></div>
+    <div class="langsw">
+      <button id="lang-zh" class="on" onclick="setLang('zh')">中文</button>
+      <button id="lang-ja" onclick="setLang('ja')">日本語</button>
+    </div>
+    <div class="clock" id="clock">00:00:00</div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- LEFT: robot POV feed -->
+    <section class="panel feed">
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+      <div class="ptag"><span class="k">CAM-01</span><span class="v" id="camTitle"></span></div>
+      <div class="rec"><i></i>REC · LIVE</div>
+      <div class="phasebar" id="phasebar"><i></i><span id="phasetxt"></span><div class="phaseprog"><b id="phaseprog"></b></div></div>
+      <video id="povVideo" muted playsinline preload="auto"></video>
+      <div class="novid" id="novid"><span id="novidTxt">信号丢失 · NO SIGNAL</span><b id="novidName"></b><small id="novidHint"></small></div>
+      <canvas id="pov"></canvas>
+      <div class="feedfx"></div>
+      <div class="feedctrl" id="feedctrl">
+        <button class="fcbtn" id="btnAuto" type="button">⟳ 自动演示</button>
+        <button class="fcbtn hot" id="btnExec" type="button">▶ 执行最优动作</button>
+      </div>
+      <div class="meta">
+        <span>FPS <b id="fps">30</b></span>
+        <span><span id="mDet"></span> <b id="det">0</b></span>
+        <span>ISO <b>800</b></span>
+        <span>F/<b>1.8</b></span>
+        <span><span id="mDepth"></span> <b id="depth">2.4m</b></span>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <div class="right">
+      <!-- predictions -->
+      <section class="panel preds">
+        <span class="corner tl"></span><span class="corner tr"></span>
+        <span class="corner bl"></span><span class="corner br"></span>
+        <div class="ptag"><span class="k">ACTIONS</span><span class="v" id="predTitle"></span></div>
+        <div class="predhint" id="predHint"></div>
+        <div class="pred-list" id="predList"></div>
+      </section>
+
+      <!-- heatmap -->
+      <section class="panel heat">
+        <span class="corner tl"></span><span class="corner tr"></span>
+        <span class="corner bl"></span><span class="corner br"></span>
+        <div class="ptag"><span class="k">OCCUPANCY</span><span class="v" id="heatTitle"></span></div>
+        <div class="heatcap" id="heatCap"></div>
+        <div class="heat-wrap">
+          <div class="heatbox">
+            <canvas id="heat"></canvas>
+            <div class="heatgrid"></div>
+          </div>
+          <div class="scale"><span id="scHi"></span><div class="bar"></div><span id="scLo"></span></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ftags">
+      <div class="ftag"><span id="fLat"></span> <b id="lat">42ms</b></div>
+      <div class="divider"></div>
+      <div class="ftag"><span id="fFrames"></span> <b id="frames">0</b></div>
+      <div class="divider"></div>
+      <div class="ftag am"><span id="fConf"></span> <b id="conf">0.96</b></div>
+      <div class="divider"></div>
+      <div class="ftag"><span id="fStep"></span> <b>16</b></div>
+    </div>
+    <div class="ticker"><span id="tick"></span></div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   视频配置 —— 改成你的本地文件名即可 (放在与本 HTML 同目录)
+   注意: 必须是视频格式 (.mp4 / .webm)
+   ============================================================ */
+const VIDEOS = {
+  observe : 'robot.MOV',        // ① 真实机器人第一视角(视频中障碍物出现) —— 只播一次并停在最后一帧
+  act     : 'final.MOV',        // ③ 选定最优动作后 · 真实机器人执行视频(向左绕行) —— 只播一次
+  predict : {                   // ② COSMOS 世界模型预测视频, 按动作对应 —— 每个只播一次
+    left     : 'left.MOV',      //    向左绕行 (最优)
+    right    : 'right.MOV',     //    向右绕行
+    stop     : 'stop.MOV',      //    停下等待
+    back     : 'back.MOV',      //    后退回避
+    straight : 'straight.MOV',  //    继续直行
+  }
+};
+
+/* ===== 节奏参数(毫秒) ===== */
+const PREDICT_INTRO_MS  = 1400;  // robot.mp4 结束后 · 冻结最后一帧 + 显示"预测中"进度条的停留时间
+const REVEAL_DELAY_MS   = 550;   // 动作标签"弹出"后, 再切左侧预测视频的延时(先弹字, 后播视频)
+const MISSING_FALLBACK_MS = 2600;// 某个视频缺失/加载失败时, 自动跳到下一步的时间(避免卡住)
+
+/* ============ utils ============ */
+const $ = s => document.querySelector(s);
+const now = () => performance.now()/1000;
+function fit(cv){
+  const r = cv.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  cv.width = Math.max(2, r.width*dpr);
+  cv.height = Math.max(2, r.height*dpr);
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {w:r.width,h:r.height,ctx};
+}
+
+/* ============ i18n ============ */
+const I18N = {
+  zh:{
+    brand:['<span style="color:var(--amber);font-weight:900">IST</span> COSMOS ','世界模型',' · 决策推演引擎'],
+    active:'推理中', model:'模型', device:'设备',
+    cam:'机器人第一视角', camPredict:'COSMOS世界模型预测结果', det:'检测障碍', depth:'障碍距离',
+    predHint:'点击任一动作 · 预览世界模型推演', btnAuto:'⟳ 自动演示', btnExec:'▶ 执行最优动作',
+    noSignal:'信号丢失 · NO SIGNAL', noSignalHint:'请检查视频文件是否与本页面同目录',
+    predTitle_wait:'动作候选推演 · 待推理', predTitle_run:'推演中 · 采样动作分支',
+    predTitle_eval:'评估中 · 对齐任务目标', predTitle_done:'决策完成 · 已选最优动作',
+    heat:'俯视占据栅格', scHi:'障碍', scLo:'可行', heatCap:'实时障碍占据图 · <b>红=障碍物</b> / <i>蓝=可通行</i>',
+    fLat:'周期延迟', fFrames:'采样帧', fConf:'置信度', fStep:'预测步长',
+    ph_init:'系统初始化 · INITIALIZING', ph_obs:'感知中 · PERCEIVE',
+    ph_pred:'预测中 · PREDICT', ph_eval:'评估中 · EVALUATE',
+    ph_decide:'决策中 · DECIDE', ph_act:'执行中 · ACT',
+    predicting:'◊ 推演动作后果  PREDICTING ◊',
+    camboot:'● 摄像头初始化  CAMERA ONLINE…',
+    trajlab:'► 选定路径 · ', selected:'已选定',
+    prob:'发生概率', score:'任务得分',
+    ticker:'世界模型推理流 // <b>Cosmos-Predict2</b> 已加载 16 预测步长 · 障碍检测 [椅子] 已锁定 · 5 路动作分支并行推演 · <b>动作条件预测</b> 采样 256 帧 · 奖励函数评估中 · 最优动作已选定 → 向左绕行 · 关节轨迹已下发 · 闭环滚动控制 MPC 运行中 · 等待下一观测帧 ····· '
+  },
+  ja:{
+    brand:['<span style="color:var(--amber);font-weight:900">IST</span> COSMOS ','ワールドモデル',' · 意思決定推論エンジン'],
+    active:'推論中', model:'モデル', device:'デバイス',
+    cam:'ロボット一人称視点', camPredict:'COSMOSワールドモデル予測結果', det:'障害物検出', depth:'障害物距離',
+    predHint:'いずれかの行動をクリック · 予測を表示', btnAuto:'⟳ 自動再生', btnExec:'▶ 最適行動を実行',
+    noSignal:'信号なし · NO SIGNAL', noSignalHint:'動画ファイルが本ページと同じフォルダにあるか確認してください',
+    predTitle_wait:'行動候補の推論 · 待機中', predTitle_run:'推論中 · 行動分岐サンプリング',
+    predTitle_eval:'評価中 · タスク目標との整合', predTitle_done:'意思決定完了 · 最適行動を選択',
+    heat:'俯瞰占有グリッド', scHi:'障害', scLo:'走行可', heatCap:'リアルタイム占有マップ · <b>赤=障害物</b> / <i>青=走行可</i>',
+    fLat:'サイクル遅延', fFrames:'サンプルフレーム', fConf:'信頼度', fStep:'予測ステップ',
+    ph_init:'システム初期化 · INITIALIZING', ph_obs:'知覚中 · PERCEIVE',
+    ph_pred:'予測中 · PREDICT', ph_eval:'評価中 · EVALUATE',
+    ph_decide:'意思決定中 · DECIDE', ph_act:'実行中 · ACT',
+    predicting:'◊ 行動結果を推論中  PREDICTING ◊',
+    camboot:'● カメラ初期化  CAMERA ONLINE…',
+    trajlab:'► 選択経路 · ', selected:'選択済み',
+    prob:'発生確率', score:'タスクスコア',
+    ticker:'ワールドモデル推論ストリーム // <b>Cosmos-Predict2</b> 16予測ステップ読込済 · 障害物検出 [椅子] ロック · 5行動分岐を並列推論 · <b>行動条件付き予測</b> 256フレームサンプリング · 報酬関数を評価中 · 最適行動を選択 → 左回避 · 関節軌道を送信済 · 閉ループMPC制御 稼働中 · 次の観測フレーム待機 ····· '
+  }
+};
+let LANG='zh';
+function T(){ return I18N[LANG]; }
+
+/* ============ scenarios (避障动作候选) ============
+   顺序 = 右侧弹出顺序: 向左绕行 → 向右绕行 → 停下等待 → 后退回避 → 继续直行
+   最优动作 = 任务得分最高者 = 向左绕行 (index 0)
+   ================================================= */
+const scenarios = [
+  {idx:'01', lab_zh:'向左绕行', lab_ja:'左へ回避',   en:'STEER LEFT',  base:34, score:0.92, safe_zh:'安全', safe_ja:'安全',     traj:'left',     good:true},
+  {idx:'02', lab_zh:'向右绕行', lab_ja:'右へ回避',   en:'STEER RIGHT', base:21, score:0.58, safe_zh:'偏窄', safe_ja:'やや狭い', traj:'right',    good:false},
+  {idx:'03', lab_zh:'停下等待', lab_ja:'停止して待機', en:'STOP & WAIT', base:18, score:0.10, safe_zh:'停滞', safe_ja:'停滞',     traj:'stop',     good:false},
+  {idx:'04', lab_zh:'后退回避', lab_ja:'後退',       en:'RETREAT',     base:15, score:-0.30, safe_zh:'倒退', safe_ja:'後退',     traj:'back',     good:false},
+  {idx:'05', lab_zh:'继续直行', lab_ja:'直進継続',   en:'GO STRAIGHT', base:12, score:-0.85, safe_zh:'碰撞', safe_ja:'衝突',     traj:'straight', good:false},
+];
+function labOf(s){ return LANG==='zh'?s.lab_zh:s.lab_ja; }
+function safeOf(s){ return LANG==='zh'?s.safe_zh:s.safe_ja; }
+const N = scenarios.length;
+// 决策阶段选中「任务得分最高」的动作 —— 现在为 向左绕行
+const bestActionIdx = scenarios.reduce((bi,s,i,arr)=> s.score>arr[bi].score?i:bi, 0);
+
+const baseTargets = scenarios.map(s=>s.base);
+let targets = baseTargets.slice();
+let shown   = baseTargets.map(()=>0);
+
+const listEl = $('#predList');
+function buildPredList(){
+  listEl.innerHTML='';
+  scenarios.forEach((s,i)=>{
+    const el = document.createElement('div');
+    el.className='pred'; el.id='pred'+i;
+    const sc=(s.score>0?'+':'')+s.score.toFixed(2);
+    const scColor=s.score>0.5?'var(--grn)':s.score>0?'var(--amber)':'var(--hot)';
+    el.innerHTML = `<div class="fill"></div>
+      <div class="idx">${s.idx}</div>
+      <div class="lab">${labOf(s)}<small><span class="scMetric" style="color:${scColor}">${T().score} ${sc} · ${safeOf(s)}</span></small></div>
+      <div class="prob">--%</div>`;
+    el.addEventListener('click', ()=> previewTraj(s.traj, i));
+    listEl.appendChild(el);
+  });
+}
+buildPredList();
+
+/* =========================================================
+   事件驱动状态机
+   observe -> predict(逐个弹出+逐段播放) -> act(final) -> observe...
+   ========================================================= */
+const FLOW = { state:'observe', k:-1, progress:0 };
+let stateStart = now();
+let heatOnSince = 0;
+let cycleIndex  = -1;      // 只在第0轮显示"摄像头初始化"
+let autoRunning = true;    // 手动预览/执行时置 false, 暂停自动推进
+let stepTimer   = null;
+
+function armFallback(ms){ clearFallback(); stepTimer = setTimeout(onLeftEnded, ms); }
+function clearFallback(){ if(stepTimer){ clearTimeout(stepTimer); stepTimer=null; } }
+
+/* 每一段视频自然播放结束(或缺失超时)时推进 */
+function onLeftEnded(){
+  if(!autoRunning) return;
+  clearFallback();
+  if(FLOW.state==='observe')      enterPredict();
+  else if(FLOW.state==='predict') advancePredict();
+  else if(FLOW.state==='act')     enterObserve();
+}
+
+/* ① 观测: 播放 robot.mp4 一次, 结束停在最后一帧 */
+function enterObserve(){
+  clearFallback();
+  FLOW.state='observe'; FLOW.k=-1; FLOW.progress=0;
+  stateStart=now(); cycleIndex++;
+  heatOnSince=0;
+  targets = baseTargets.slice();
+  shown   = baseTargets.map(()=>0);
+  progDisp=0;
+  $('#conf').textContent='0.96';
+  scenarios.forEach((s,i)=>{ const el=$('#pred'+i); if(el){ el.classList.remove('decided','lead','show'); el.style.opacity=''; } });
+  playLeft('observe', null, false);   // 不循环
+}
+
+/* ② 预测: 冻结最后一帧 + "预测中"进度条 -> 逐个弹出动作并播放对应视频 */
+function enterPredict(){
+  clearFallback();
+  FLOW.state='predict'; FLOW.k=-1;
+  stateStart=now(); heatOnSince=now();
+  FLOW.progress=0.06; progDisp=0;
+  // robot.mp4 保持停在最后一帧(不切换视频), 停留后再弹出第一个动作
+  stepTimer = setTimeout(advancePredict, PREDICT_INTRO_MS);
+}
+
+/* 弹出下一个动作 -> 先弹字, 再播视频; 全部播完进入执行 */
+function advancePredict(){
+  clearFallback();
+  FLOW.k++;
+  if(FLOW.k >= N){ enterAct(); return; }
+  FLOW.progress = (FLOW.k+1)/N;                     // 进度条随分支推进
+  const traj = scenarios[FLOW.k].traj;             // 标签在 updatePreds 里已随 FLOW.k 弹出
+  stepTimer = setTimeout(()=>{ playLeft('predict', traj, false); }, REVEAL_DELAY_MS);
+}
+
+/* ③ 执行: 播放 final.mp4 一次, 结束后回到 observe */
+function enterAct(){
+  clearFallback();
+  FLOW.state='act'; stateStart=now();
+  FLOW.progress=1;
+  playLeft('act', null, false);
+}
+
+/* ============ 左侧视频控制器 ============ */
+const vid   = $('#povVideo');
+const noSig = $('#novid');
+let curKind=null, curTraj=null, curLoop=false;
+
+function srcFor(kind, traj){
+  if(kind==='observe') return VIDEOS.observe;
+  if(kind==='act')     return VIDEOS.act;
+  if(kind==='predict') return (VIDEOS.predict||{})[traj] || null;
+  return null;
+}
+function refreshLeftTitle(){
+  const L=T();
+  if(curKind==='predict'){
+    const sc=scenarios.find(s=>s.traj===curTraj);
+    $('#camTitle').textContent = L.camPredict + (sc? ' · '+labOf(sc) : '');
+  } else {
+    $('#camTitle').textContent = L.cam;
+  }
+}
+function showNoSignal(traj){
+  vid.classList.remove('on');
+  const L=T();
+  const sc = scenarios.find(s=>s.traj===traj);
+  $('#novidTxt').textContent  = L.noSignal;
+  $('#novidName').textContent = sc ? '['+labOf(sc)+']' : '';
+  $('#novidHint').textContent = L.noSignalHint;
+  noSig.classList.add('show');
+}
+function playLeft(kind, traj, loop){
+  loop=!!loop; traj=traj||null;
+  if(kind===curKind && traj===curTraj && loop===curLoop && vid.classList.contains('on')) return;
+  curKind=kind; curTraj=traj; curLoop=loop;
+  refreshLeftTitle();
+  const file = srcFor(kind, traj);
+  if(!file){ showNoSignal(traj); if(autoRunning) armFallback(MISSING_FALLBACK_MS); return; }
+  noSig.classList.remove('show');
+  vid.classList.remove('on');          // 淡出
+  vid.loop = loop;
+  vid.src  = file;
+  vid.load();
+}
+vid.addEventListener('loadeddata', ()=>{ noSig.classList.remove('show'); vid.classList.add('on'); vid.play().catch(()=>{}); });
+vid.addEventListener('loadedmetadata', ()=>{
+  // 安全网: 万一 ended 不触发, 也能在视频时长后自动推进(仅自动模式、非循环时)
+  if(autoRunning && !vid.loop && isFinite(vid.duration) && vid.duration>0) armFallback(vid.duration*1000 + 1500);
+});
+vid.addEventListener('ended', ()=>{ if(!vid.loop) onLeftEnded(); });   // 只播一次 -> 结束即推进/停帧
+vid.addEventListener('error', ()=>{ showNoSignal(curTraj); if(autoRunning) armFallback(MISSING_FALLBACK_MS); });
+
+/* ===== 手动交互 ===== */
+function clearPreviewMark(){ scenarios.forEach((s,i)=>{ const el=$('#pred'+i); if(el) el.classList.remove('previewing'); }); }
+function previewTraj(traj, i){        // 点击任一动作 -> 循环预览其世界模型预测视频(暂停自动)
+  autoRunning=false; clearFallback();
+  clearPreviewMark();
+  const el=$('#pred'+i); if(el) el.classList.add('previewing');
+  playLeft('predict', traj, true);
+}
+function executeBest(){               // 执行最优动作 -> 循环播放 final.mp4(暂停自动)
+  autoRunning=false; clearFallback();
+  clearPreviewMark();
+  playLeft('act', null, true);
+}
+function resumeAuto(){                // 恢复自动演示 -> 从 robot.mp4 重头开始
+  autoRunning=true; clearPreviewMark();
+  enterObserve();
+}
+$('#btnExec').addEventListener('click', executeBest);
+$('#btnAuto').addEventListener('click', resumeAuto);
+
+/* ============ 概率抖动(仅预测阶段, 让数字有生命感) ============ */
+function jitter(){
+  if(FLOW.state!=='predict') return;
+  targets = targets.map(p=> Math.max(4, p + (Math.random()-0.5)*4));
+  const sum = targets.reduce((a,b)=>a+b,0);
+  targets = targets.map(p=> p/sum*100);
+  $('#conf').textContent = (0.90 + Math.random()*0.09).toFixed(2);
+}
+setInterval(jitter, 1400);
+
+/* ============ 右侧动作列表刷新 ============ */
+let leadIdx = 0;
+function updatePreds(){
+  let rc;
+  if(FLOW.state==='observe') rc=0;
+  else if(FLOW.state==='predict') rc=Math.max(0, Math.min(N, FLOW.k+1));
+  else rc=N;                                 // act: 全部显示
+  const decided = (FLOW.state==='act');
+
+  // 黄色高亮项:
+  //   预测阶段 = 当前正在采样的分支(随弹出顺序逐个下移, 标"采样中")
+  //   执行阶段 = 评估选出的最优动作(向左绕行, 变绿"已选定")
+  let hi = -1;
+  if(decided) hi = bestActionIdx;
+  else if(rc>0) hi = Math.min(rc-1, N-1);      // = FLOW.k
+  leadIdx = hi<0?0:hi;
+
+  for(let i=0;i<N;i++){
+    const el=$('#pred'+i); const vis=i<rc; const isHi = vis && i===hi;
+    el.classList.toggle('show', vis);
+    const goal = vis? targets[i]:0;
+    shown[i] += (goal - shown[i])*0.12;
+    el.querySelector('.fill').style.width = shown[i]+'%';
+    el.querySelector('.prob').textContent = vis? Math.round(shown[i])+'%' : '--%';
+    el.classList.toggle('lead', isHi);
+    el.classList.toggle('decided', isHi && decided);
+    if(isHi) el.setAttribute('data-tag', decided ? T().selected : (LANG==='zh'?'采样中':'サンプリング中'));
+    // 执行后非选中项淡出; 预测阶段全部保持
+    el.style.opacity = (decided && vis && !isHi) ? '0.4' : '';
+  }
+}
+
+/* ============ 阶段标签 / 进度条 ============ */
+let progDisp=0;
+function updatePhaseUI(){
+  const pb=$('#phasebar'), txt=$('#phasetxt'), pt2=$('#predTitle'); const L=T();
+  pb.classList.remove('predict','done');
+  if(FLOW.state==='observe'){
+    const early = (now()-stateStart)<1.4 && cycleIndex===0;
+    txt.textContent = early ? L.ph_init : L.ph_obs;
+    pt2.textContent = L.predTitle_wait;
+    $('#det').textContent = (now()-stateStart)<1.5 ? 0 : 1;
+  } else if(FLOW.state==='predict'){
+    pb.classList.add('predict');
+    txt.textContent = L.ph_pred;
+    pt2.textContent = L.predTitle_run;
+    $('#det').textContent = 1;
+  } else {
+    pb.classList.add('done');
+    txt.textContent = L.ph_act;
+    pt2.textContent = L.predTitle_done;
+    $('#det').textContent = 1;
+  }
+}
+
+/* ============ POV 叠加层 ============ */
+const pov = $('#pov');
+let P = fit(pov);
+function drawPOV(t){
+  const {w,h,ctx} = P;
+  ctx.clearRect(0,0,w,h);
+  const cx=w/2, cy=h/2;
+  const st = t - stateStart;
+
+  // 扫描线
+  const sy = ((t*0.16)%1)*h;
+  const sg = ctx.createLinearGradient(0,sy-26,0,sy+26);
+  sg.addColorStop(0,'transparent'); sg.addColorStop(.5,'rgba(45,226,255,.16)'); sg.addColorStop(1,'transparent');
+  ctx.fillStyle=sg; ctx.fillRect(0,sy-26,w,52);
+
+  // 中心准星 + 取景框
+  ctx.strokeStyle='rgba(45,226,255,.45)'; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(cx-18,cy); ctx.lineTo(cx-6,cy);
+  ctx.moveTo(cx+6,cy);  ctx.lineTo(cx+18,cy);
+  ctx.moveTo(cx,cy-18); ctx.lineTo(cx,cy-6);
+  ctx.moveTo(cx,cy+6);  ctx.lineTo(cx,cy+18);
+  ctx.stroke();
+  ctx.strokeStyle='rgba(45,226,255,.22)';
+  ctx.strokeRect(cx-w*0.14, cy-h*0.14, w*0.28, h*0.28);
+
+  // 预测阶段: 顶部水印
+  if(FLOW.state==='predict'){
+    ctx.save(); ctx.textAlign='center';
+    ctx.globalAlpha=0.5+0.35*Math.sin(t*4);
+    ctx.fillStyle='rgba(255,179,71,.95)'; ctx.font='800 '+(w*0.02)+'px monospace';
+    ctx.fillText(T().predicting, cx, h*0.12);
+    ctx.textAlign='left'; ctx.restore();
+  }
+  // 执行阶段: 选定路径水印
+  if(FLOW.state==='act'){
+    ctx.save(); ctx.textAlign='center'; ctx.globalAlpha=0.9;
+    ctx.fillStyle='rgba(60,232,138,.95)'; ctx.font='800 '+(w*0.018)+'px monospace';
+    ctx.fillText(T().trajlab + labOf(scenarios[bestActionIdx]), cx, h*0.12);
+    ctx.textAlign='left'; ctx.restore();
+  }
+
+  // 首轮观测: 摄像头初始化遮罩
+  if(FLOW.state==='observe' && cycleIndex===0 && st < 1.4){
+    const k=Math.min(1, st/1.4);
+    ctx.fillStyle='rgba(2,4,9,'+(0.82*(1-k))+')'; ctx.fillRect(0,0,w,h);
+    ctx.save(); ctx.textAlign='center'; ctx.globalAlpha=0.6+0.4*Math.sin(t*5);
+    ctx.fillStyle='rgba(45,226,255,.95)'; ctx.font='700 '+(w*0.016)+'px monospace';
+    ctx.fillText(T().camboot, cx, cy);
+    ctx.textAlign='left'; ctx.restore();
+  }
+
+  $('#depth').textContent = (0.6 + Math.abs(Math.sin(t*0.4))*0.35).toFixed(1)+'m';
+}
+
+/* ============ 热力图 ============ */
+const heat = $('#heat');
+let H = fit(heat);
+const NX=28, NY=16;
+function hcol(v){
+  v=Math.max(0,Math.min(1,v));
+  let r,g,b;
+  if(v<0.5){ const k=v/0.5; r=10+k*20; g=40+k*180; b=70+k*180; }
+  else if(v<0.8){ const k=(v-0.5)/0.3; r=30+k*225; g=220-k*40; b=250-k*180; }
+  else { const k=(v-0.8)/0.2; r=255; g=180-k*120; b=70-k*0; }
+  return `rgb(${r|0},${g|0},${b|0})`;
+}
+/* 候选轨迹(栅格归一化坐标, 机器人在底部中心 前方=上) */
+const PATHS = {
+  left:     [[0.5,0.98],[0.30,0.60],[0.17,0.30],[0.15,0.05]],
+  right:    [[0.5,0.98],[0.70,0.60],[0.83,0.30],[0.85,0.05]],
+  straight: [[0.5,0.98],[0.51,0.70],[0.52,0.54],[0.52,0.44]],  // 直行撞向障碍
+  stop:     [[0.5,0.98],[0.5,0.93],[0.5,0.90],[0.5,0.88]],
+  back:     [[0.5,0.98],[0.5,1.00],[0.5,1.03],[0.5,1.06]],     // 后退(向下)
+};
+function bez(p,u){ const m=1-u;
+  return [ m*m*m*p[0][0]+3*m*m*u*p[1][0]+3*m*u*u*p[2][0]+u*u*u*p[3][0],
+           m*m*m*p[0][1]+3*m*m*u*p[1][1]+3*m*u*u*p[2][1]+u*u*u*p[3][1] ]; }
+function drawPathCurve(ctx,w,h,p,color,lw,dashOff,glow){
+  ctx.save();
+  if(glow){ ctx.shadowColor=color; ctx.shadowBlur=glow; }
+  ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.lineCap='round';
+  ctx.setLineDash([lw*2.4, lw*2.0]); ctx.lineDashOffset=dashOff;
+  ctx.beginPath();
+  ctx.moveTo(p[0][0]*w, p[0][1]*h);
+  ctx.bezierCurveTo(p[1][0]*w,p[1][1]*h, p[2][0]*w,p[2][1]*h, p[3][0]*w,p[3][1]*h);
+  ctx.stroke(); ctx.restore();
+}
+function drawHeat(t){
+  const {w,h,ctx} = H;
+  ctx.clearRect(0,0,w,h);
+  const active  = (FLOW.state==='predict' || FLOW.state==='act');
+  const decided = (FLOW.state==='act');
+  const ramp    = active && heatOnSince ? Math.max(0,Math.min(1,(t-heatOnSince)/0.9)) : 0;
+  const baseA   = active ? (0.55 + 0.45*ramp) : 0.30;   // 始终有一层动态底噪, 不再"死掉"
+
+  const cw=w/NX, ch=h/NY;
+  const rx=0.5, ry=0.98, RX=rx*w, RY=ry*h;              // 机器人位置
+  const obsGX=0.52, obsGY=0.40;
+  const sweep = (Math.sin(t*0.55)*0.5+0.5)*Math.PI;     // 雷达扫掠角(前向 0..π)
+  const pulse = 0.5+0.5*Math.sin(t*3.0);                // 障碍呼吸
+
+  /* ---- 占据栅格(流动 + 扫掠 + 障碍脉动) ---- */
+  for(let j=0;j<NY;j++){
+    for(let i=0;i<NX;i++){
+      const x=(i+0.5)/NX, y=(j+0.5)/NY;
+      const flow = 0.5
+        + 0.30*Math.sin(x*5.0 + t*1.30)
+        + 0.22*Math.cos(y*4.0 - t*1.05)
+        + 0.18*Math.sin((x+y)*6.5 + t*1.75);
+      let v = 0.09 + 0.11*flow;                          // 明显流动的底噪
+      if(active){
+        const d=Math.hypot((x-obsGX)*1.1,(y-obsGY));
+        v += Math.exp(-d*d*28) * (0.82 + 0.18*pulse);    // 障碍热区(脉动)
+        const ang=Math.atan2((ry-y),(x-rx));
+        v += Math.max(0, 1-Math.abs(ang-sweep)*3.0)*0.38;// 雷达扫掠增亮
+      }
+      if(decided && x<0.40 && y<0.62){                   // 决策后 左侧通道点亮为可行
+        v = 0.30 + 0.16*Math.sin(t*4 + x*10 - y*6);
+      }
+      ctx.fillStyle=hcol(Math.max(0,Math.min(1,v)));
+      ctx.globalAlpha=baseA;
+      ctx.fillRect(i*cw,j*ch,cw+0.6,ch+0.6);
+    }
+  }
+  ctx.globalAlpha=1;
+
+  /* ---- 雷达扫掠线 ---- */
+  if(active){
+    const ex=(rx+Math.cos(sweep)*0.98)*w, ey=(ry-Math.sin(sweep)*0.98)*h;
+    const g=ctx.createLinearGradient(RX,RY,ex,ey);
+    g.addColorStop(0,'rgba(45,226,255,.6)'); g.addColorStop(1,'rgba(45,226,255,0)');
+    ctx.save(); ctx.strokeStyle=g; ctx.lineWidth=Math.max(1.4,w*0.006);
+    ctx.beginPath(); ctx.moveTo(RX,RY); ctx.lineTo(ex,ey); ctx.stroke(); ctx.restore();
+  }
+
+  /* ---- 候选 / 选定轨迹曲线 ---- */
+  if(active){
+    const rc = decided ? N : Math.max(0,Math.min(N,FLOW.k+1));
+    const hi = decided ? bestActionIdx : Math.min(rc-1,N-1);
+    for(let i=0;i<rc;i++){
+      const p=PATHS[scenarios[i].traj]; if(!p) continue;
+      const isHi=(i===hi);
+      if(decided && isHi)  drawPathCurve(ctx,w,h,p,'rgba(60,232,138,.95)', Math.max(2,w*0.009), -t*46, 12);
+      else if(isHi)        drawPathCurve(ctx,w,h,p,'rgba(255,179,71,.95)', Math.max(2,w*0.008), -t*46, 10);
+      else                 drawPathCurve(ctx,w,h,p,'rgba(120,160,190,.32)',Math.max(1,w*0.004), -t*18, 0);
+    }
+    // 高亮路径上的行进光点
+    if(hi>=0){
+      const p=PATHS[scenarios[hi].traj];
+      if(p){ const q=bez(p,(t*0.35)%1), c=decided?'rgba(60,232,138,1)':'rgba(255,179,71,1)';
+        ctx.save(); ctx.fillStyle=c; ctx.shadowColor=c; ctx.shadowBlur=12;
+        ctx.beginPath(); ctx.arc(q[0]*w,q[1]*h,Math.max(2.5,w*0.007),0,7); ctx.fill(); ctx.restore();
+      }
+    }
+  }
+
+  /* ---- 障碍标注(让客户一眼看懂红色热区) ---- */
+  if(active){
+    ctx.save(); ctx.textAlign='center';
+    ctx.globalAlpha=0.75+0.25*pulse;
+    ctx.fillStyle='rgba(255,77,109,1)'; ctx.shadowColor='rgba(255,77,109,.9)'; ctx.shadowBlur=10;
+    ctx.font='700 '+(w*0.03)+'px monospace';
+    ctx.fillText(LANG==='zh'?'▲ 障碍':'▲ 障害', obsGX*w, obsGY*h - h*0.055);
+    ctx.textAlign='left'; ctx.restore();
+  }
+
+  /* ---- 机器人标记 ---- */
+  ctx.save(); ctx.fillStyle='rgba(45,226,255,.95)'; ctx.shadowColor='rgba(45,226,255,.9)'; ctx.shadowBlur=8;
+  ctx.beginPath(); ctx.arc(RX,RY,Math.max(2.6,w*0.011),0,7); ctx.fill(); ctx.restore();
+
+  /* ---- 待机标签(观测阶段) ---- */
+  if(!active){
+    ctx.save(); ctx.globalAlpha=0.35+0.15*Math.sin(t*2);
+    ctx.fillStyle='rgba(140,170,200,.9)'; ctx.font='600 '+(w*0.024)+'px monospace'; ctx.textAlign='center';
+    ctx.fillText(LANG==='zh'?'待机扫描 · STANDBY':'待機スキャン · STANDBY', w/2, h*0.5);
+    ctx.textAlign='left'; ctx.restore();
+  }
+}
+
+/* ============ loop ============ */
+let frames=0;
+function loop(ts){
+  const t = ts/1000;
+  updatePhaseUI();
+  updatePreds();
+  // 进度条平滑推进
+  progDisp += (FLOW.progress - progDisp)*0.06;
+  $('#phaseprog').style.width = (progDisp*100)+'%';
+  drawPOV(t); drawHeat(t);
+  frames++;
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* counters */
+setInterval(()=>{ $('#frames').textContent = frames; $('#fps').textContent=(29+Math.round(Math.random()*2)); $('#lat').textContent=(38+Math.round(Math.random()*9))+'ms'; },800);
+
+/* clock */
+function clock(){ const d=new Date();
+  $('#clock').textContent = [d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':'); }
+clock(); setInterval(clock,1000);
+
+/* ============ i18n apply ============ */
+function applyLang(){
+  const L=T();
+  document.documentElement.lang = LANG==='zh'?'zh-CN':'ja';
+  $('#brandTitle').innerHTML = L.brand[0]+'<b>'+L.brand[1]+'</b>'+L.brand[2];
+  $('#pillActive').textContent = L.active;
+  $('#pillModel').textContent = L.model;
+  $('#pillDevice').textContent = L.device;
+  refreshLeftTitle();
+  $('#predHint').textContent = L.predHint;
+  $('#btnAuto').textContent = L.btnAuto;
+  $('#btnExec').textContent = L.btnExec;
+  if($('#novid').classList.contains('show')){ showNoSignal(curTraj); }
+  $('#mDet').textContent = L.det;
+  $('#mDepth').textContent = L.depth;
+  $('#heatTitle').textContent = L.heat;
+  $('#heatCap').innerHTML = L.heatCap;
+  $('#scHi').textContent = L.scHi;
+  $('#scLo').textContent = L.scLo;
+  $('#fLat').textContent = L.fLat;
+  $('#fFrames').textContent = L.fFrames;
+  $('#fConf').textContent = L.fConf;
+  $('#fStep').textContent = L.fStep;
+  $('#tick').innerHTML = L.ticker;
+  buildPredList();
+  $('#lang-zh').classList.toggle('on', LANG==='zh');
+  $('#lang-ja').classList.toggle('on', LANG==='ja');
+}
+function setLang(l){ LANG=l; applyLang(); refreshLeftTitle(); }
+applyLang();
+
+/* ============ 启动 ============ */
+enterObserve();
+
+/* resize */
+let rz;
+addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>{ P=fit(pov); H=fit(heat); },150); });
+</script>
+</body>
+</html>
